@@ -6,7 +6,7 @@ import UserProfile from './UserProfile';
 
 const BASE_URL:string = "https://api.github.com/users/";
 
-export interface User  {
+export interface User {
   "login": string,
   "id"?: number,
   "node_id"?: string,
@@ -33,7 +33,7 @@ export interface User  {
   "hireable"?: string,
   "bio"?: string,
   "twitter_username"?: string,
-  "public_repos": number,
+  "public_repos": string,
   "public_gists"?: number,
   "followers"?: number,
   "following"?: number,
@@ -44,7 +44,7 @@ export interface User  {
 function App() {
 
   const [userName, setUserName] = useState<string>("");
-  const [userData, setUserData] = useState<User>({login: "", name: "", avatar_url: "", public_repos: 0});
+  const [userData, setUserData] = useState<User>({login: "", name: "", avatar_url: "", public_repos: ""});
   const [error, setError] = useState<string>("");
  
   const getData = async (input: string) => {
@@ -57,13 +57,13 @@ function App() {
           setError("");
           setUserData({login: data.login, name: data.name, public_repos: data.public_repos,avatar_url: data.avatar_url});
         } else {
-          setUserData({login: "", name: "", avatar_url: "", public_repos: 0});
+          setUserData({login: "", name: "", avatar_url: "", public_repos: ""});
 
           setError("Could not receive data, Please try again");
         }
        })
       .catch((error) => {
-        setUserData({login: "", name: "", avatar_url: "", public_repos: 0});
+        setUserData({login: "", name: "", avatar_url: "", public_repos: ""});
         if(error.response){
           setError(error.response.statusText);
         } else if (error.request){
@@ -91,11 +91,11 @@ function App() {
         placeholder="Enter github username"
         className="input-field"
         value={userName}
-        onChange={(e) => handleOnChange(e)}     
+        onChange={handleOnChange}     
       />
-      {userData && error && <p>User {error}</p>}
+      {error && <p>User {error}</p>}
 
-      {!error && userData.login && <UserProfile
+      {!error && <UserProfile
         userData={userData}
       />}
 

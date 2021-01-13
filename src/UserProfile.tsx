@@ -2,11 +2,11 @@ import React from 'react';
 import dummyProfileImage from './dummy-profile-image.jpeg'
 import { User } from './App';
 
-interface PropType {
+interface UserProfileProps {
     userData: User
 }
 
-const UserProfile = ({userData}:PropType) => {
+const UserProfile = ({userData}:UserProfileProps) => {
     return (
         <div>
             <img className="profile-image" src={userData.avatar_url || dummyProfileImage} alt="Profile"/>
