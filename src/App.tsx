@@ -3,24 +3,34 @@ import axios from 'axios';
 import './App.css';
 import UserProfile from './UserProfile';
 
-
 const BASE_URL:string = "https://api.github.com/users/"; 
 let timeout:any;
 function App() {
+
+  interface User {
+    imageUrl?: string,
+    userId?: string,
+    name?: string,
+    repo?: number
+  }
+
   const [userName, setUserName] = useState<string>("");
-  const [userData, setUserData] = useState<object>();
+  const [userData, setUserData] = useState<User>({});
   const [error, setError] = useState<string>("");
  
   const getData = async () => {
     const CancelToken = axios.CancelToken;
       const source = CancelToken.source();
     
-      await axios.get(BASE_URL + userName, {cancelToken: source.token})
+      axios.get(BASE_URL + userName, {cancelToken: source.token})
       .then((response) => {
         if(userName === response.data.login.toLowerCase()){
           const data = response.data;
-          setUserData(data);
+          setUserData({userId: data.login, name: data.name, repo: data.public_repos,imageUrl: data.avatar_url});
           setError("");
+        } else {
+          setUserData({});
+          setError("Could not receive data, Please try again");
         }
        })
       .catch((error) => {
@@ -58,9 +68,10 @@ function App() {
         onKeyUp={() => handleKeyUp()}     
       />
 
-      <UserProfile 
+      <UserProfile
         userData = {userData}
         error = {error}
+        userName = {userName}
       />
     </div>
   );

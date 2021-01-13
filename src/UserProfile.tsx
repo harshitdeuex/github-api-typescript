@@ -1,26 +1,27 @@
 import React from 'react';
-import { EnumType } from 'typescript';
+import dummyProfileImage from './dummy-profile-image.jpeg'
+
 
 interface userProfileProps {
-    userData: any;
+    userData: {
+                imageUrl?: string,
+                userId?: string,
+                name?: string,
+                repo?: number
+                }; 
     error: string;
+    userName: string;
 }
 
-const maleDummyImage:string = "https://st2.depositphotos.com/1502311/12020/v/600/depositphotos_120206862-stock-illustration-profile-picture-vector.jpg";
-const DEFAULT_ERROR_MESSAGE:string = "Not Found";
-
-const UserProfile = ({userData, error}:userProfileProps) => {
+const UserProfile = ({userData, error, userName}:userProfileProps) => {
     return (
         <div>
-            <img className="profile-image" src={userData?.avatar_url || maleDummyImage} alt="Profile"/>
-            {!userData && error && <p>User {error}</p>}
-            {
-            userData && !error && <div>
-            <p>Username: {userData?.login || DEFAULT_ERROR_MESSAGE}</p>
-            <p>Name: {userData?.name || DEFAULT_ERROR_MESSAGE}</p>
-            <p>Number of Repository: {userData?.public_repos || DEFAULT_ERROR_MESSAGE}</p>
-            </div>
-            }
+            <img className="profile-image" src={userData.imageUrl || dummyProfileImage} alt="Profile"/>
+            {userName && error && <p>User {error}</p>}
+            
+            {userData.userId && <p>Username: {userData.userId}</p>}
+            {userData.name && <p>Name: {userData.name}</p>}
+            {!error && userData.repo != null && <p>Number of Repository: {userData.repo}</p>}
         </div>
     )
 }
