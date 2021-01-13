@@ -1,3 +1,4 @@
+
 import React, { useState} from 'react';
 import axios from 'axios';
 import './App.css';
@@ -39,7 +40,7 @@ export interface User  {
   "created_at"?: string,
   "updated_at"?: string,
 } 
-
+        
 function App() {
 
   const [userName, setUserName] = useState<string>("");
@@ -57,6 +58,7 @@ function App() {
           setUserData({login: data.login, name: data.name, public_repos: data.public_repos,avatar_url: data.avatar_url});
         } else {
           setUserData({login: "", name: "", avatar_url: "", public_repos: 0});
+
           setError("Could not receive data, Please try again");
         }
        })
@@ -96,6 +98,7 @@ function App() {
       {!error && userData.login && <UserProfile
         userData={userData}
       />}
+
     </div>
   );
 }

@@ -14,6 +14,7 @@ const UserProfile = ({userData}:PropType) => {
             <p>Username: {userData.login}</p>
             <p>Name: {userData.name}</p>
             <p>Number of Repository: {userData.public_repos}</p>
+
         </div>
     )
 }
