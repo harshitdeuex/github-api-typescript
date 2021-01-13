@@ -1,27 +1,19 @@
 import React from 'react';
 import dummyProfileImage from './dummy-profile-image.jpeg'
+import { User } from './App';
 
-
-interface userProfileProps {
-    userData: {
-                imageUrl?: string,
-                userId?: string,
-                name?: string,
-                repo?: number
-                }; 
-    error: string;
-    userName: string;
+interface PropType {
+    userData: User
 }
 
-const UserProfile = ({userData, error, userName}:userProfileProps) => {
+const UserProfile = ({userData}:PropType) => {
     return (
         <div>
-            <img className="profile-image" src={userData.imageUrl || dummyProfileImage} alt="Profile"/>
-            {userName && error && <p>User {error}</p>}
+            <img className="profile-image" src={userData.avatar_url || dummyProfileImage} alt="Profile"/>
             
-            {userData.userId && <p>Username: {userData.userId}</p>}
-            {userData.name && <p>Name: {userData.name}</p>}
-            {!error && userData.repo != null && <p>Number of Repository: {userData.repo}</p>}
+            <p>Username: {userData.login}</p>
+            <p>Name: {userData.name}</p>
+            <p>Number of Repository: {userData.public_repos}</p>
         </div>
     )
 }
