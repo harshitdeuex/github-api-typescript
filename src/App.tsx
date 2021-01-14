@@ -44,26 +44,26 @@ export interface User {
 function App() {
 
   const [userName, setUserName] = useState<string>("");
-  const [userData, setUserData] = useState<User>({login: "", name: "", avatar_url: "", public_repos: ""});
+  const [userData, setUserData] = useState<User | null>(null);
   const [error, setError] = useState<string>("");
  
-  const getData = async (input: string) => {
+  const getData = (input: string) => {
     const CancelToken = axios.CancelToken;
       const source = CancelToken.source();
-      axios.get(BASE_URL + input, {cancelToken: source.token})
+      axios.get<User>(BASE_URL + input, {cancelToken: source.token})
       .then((response) => {
         if(input === response.data.login.toLowerCase()){
           const data = response.data;
           setError("");
           setUserData({login: data.login, name: data.name, public_repos: data.public_repos,avatar_url: data.avatar_url});
         } else {
-          setUserData({login: "", name: "", avatar_url: "", public_repos: ""});
+          setUserData(null);
 
           setError("Could not receive data, Please try again");
         }
        })
       .catch((error) => {
-        setUserData({login: "", name: "", avatar_url: "", public_repos: ""});
+        setUserData(null);
         if(error.response){
           setError(error.response.statusText);
         } else if (error.request){
@@ -93,9 +93,9 @@ function App() {
         value={userName}
         onChange={handleOnChange}     
       />
-      {!userData.login && <p>User {error}</p>}
+      {error && <p>User {error}</p>}
 
-      {userData.login && <UserProfile
+      {userData && <UserProfile
         userData={userData}
       />}
 
