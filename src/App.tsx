@@ -1,40 +1,69 @@
-import React, {useState} from 'react';
+
+import React, { useState} from 'react';
 import axios from 'axios';
 import './App.css';
 import UserProfile from './UserProfile';
 
-const BASE_URL:string = "https://api.github.com/users/"; 
-let timeout:any;
+const BASE_URL:string = "https://api.github.com/users/";
+
+export interface User {
+  "login": string,
+  "id"?: number,
+  "node_id"?: string,
+  "avatar_url": string,
+  "gravatar_id"?: string,
+  "url"?: string,
+  "html_url"?: string,
+  "followers_url"?: string,
+  "following_url"?: string,
+  "gists_url"?: string,
+  "starred_url"?: string,
+  "subscriptions_url"?: string,
+  "organizations_url"?: string,
+  "repos_url"?: string,
+  "events_url"?: string,
+  "received_events_url"?: string,
+  "type"?: string,
+  "site_admin"?: false,
+  "name": string,
+  "company"?: string,
+  "blog"?: string,
+  "location"?: string,
+  "email"?: string,
+  "hireable"?: string,
+  "bio"?: string,
+  "twitter_username"?: string,
+  "public_repos": string,
+  "public_gists"?: number,
+  "followers"?: number,
+  "following"?: number,
+  "created_at"?: string,
+  "updated_at"?: string,
+} 
+        
 function App() {
 
-  interface User {
-    imageUrl?: string,
-    userId?: string,
-    name?: string,
-    repo?: number
-  }
-
   const [userName, setUserName] = useState<string>("");
-  const [userData, setUserData] = useState<User>({});
+  const [userData, setUserData] = useState<User | null>(null);
   const [error, setError] = useState<string>("");
  
-  const getData = async () => {
+  const getData = (input: string) => {
     const CancelToken = axios.CancelToken;
       const source = CancelToken.source();
-    
-      axios.get(BASE_URL + userName, {cancelToken: source.token})
+      axios.get<User>(BASE_URL + input, {cancelToken: source.token})
       .then((response) => {
-        if(userName === response.data.login.toLowerCase()){
+        if(input === response.data.login.toLowerCase()){
           const data = response.data;
-          setUserData({userId: data.login, name: data.name, repo: data.public_repos,imageUrl: data.avatar_url});
           setError("");
+          setUserData({login: data.login, name: data.name, public_repos: data.public_repos,avatar_url: data.avatar_url});
         } else {
-          setUserData({});
+          setUserData(null);
+
           setError("Could not receive data, Please try again");
         }
        })
       .catch((error) => {
-        setUserData({});
+        setUserData(null);
         if(error.response){
           setError(error.response.statusText);
         } else if (error.request){
@@ -48,12 +77,10 @@ function App() {
       })  
   }
 
-  const handleKeyUp = () => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => {
-      console.log("submitted");
-      getData();
-    }, 1000);
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let input: string = e.target.value.trim();
+    setUserName(input);
+    getData(input);
   }
 
   return (
@@ -64,15 +91,14 @@ function App() {
         placeholder="Enter github username"
         className="input-field"
         value={userName}
-        onChange={(e) => setUserName(e.target.value.trim())}
-        onKeyUp={() => handleKeyUp()}     
+        onChange={handleOnChange}     
       />
+      {error && <p>User {error}</p>}
 
-      <UserProfile
-        userData = {userData}
-        error = {error}
-        userName = {userName}
-      />
+      {userData && <UserProfile
+        userData={userData}
+      />}
+
     </div>
   );
 }
