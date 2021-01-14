@@ -93,9 +93,9 @@ function App() {
         value={userName}
         onChange={handleOnChange}     
       />
-      {error && <p>User {error}</p>}
+      {!userData.login && <p>User {error}</p>}
 
-      {!error && <UserProfile
+      {userData.login && <UserProfile
         userData={userData}
       />}
 
